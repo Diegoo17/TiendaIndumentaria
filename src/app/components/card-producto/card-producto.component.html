@@ -1,0 +1,43 @@
+<div class="card-producto">
+    <div class="card-imagen">
+      <img [src]="producto.imagen" alt="{{ producto.name }}">
+    </div>
+    <div class="card-contenido">
+      <h3 class="producto-nombre">{{ producto.name }}</h3>
+      <p class="producto-precio">${{ producto.price }}</p>
+      <div class="card-acciones">
+        <button class="btn-detalles" (click)="toggleDetalles($event)">Ver detalles</button>
+        <button class="btn-agregar" (click)="agregarAlCarrito()" *ngIf="isAuthenticated">
+          <i class="fas fa-cart-plus"></i> Agregar
+        </button>
+        @if (isAdmin) {
+          <button class="btn-eliminar" (click)="onEliminar()" >Eliminar</button>
+        }
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal-overlay" *ngIf="mostrarDetalles" (click)="cerrarModal($event)">
+    <div class="modal-contenido" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Detalles del Producto</h3>
+        <button class="btn-cerrar" (click)="cerrarModal($event)">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-imagen">
+          <img [src]="producto.imagen" alt="{{ producto.name }}">
+        </div>
+        <p><strong>Nombre:</strong> {{ producto.name }}</p>
+        <p><strong>Precio:</strong> ${{ producto.price }}</p>
+        <p><strong>Descripción:</strong> {{ producto.description }}</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-agregar" (click)="agregarAlCarrito()">
+          <i class="fas fa-cart-plus"></i> Agregar al Carrito
+        </button>
+        <a [href]="getWhatsappLink()" target="_blank" class="btn-whatsapp">
+          <i class="fab fa-whatsapp"></i> Consultar por WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>

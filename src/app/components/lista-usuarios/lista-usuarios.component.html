@@ -1,0 +1,33 @@
+<div class="usuarios-container">
+  <h2>Lista de Usuarios</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Teléfono</th>
+        <th>Dirección</th>
+        <th>Role</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let usuario of usuarios">
+        <td>{{usuario.id}}</td>
+        <td>{{usuario.nombre}}</td>
+        <td>{{usuario.email}}</td>
+        <td>{{usuario.telefono}}</td>
+        <td>{{usuario.direccion}}</td>
+        <td>{{usuario.role}}</td>
+        <td>
+          <button (click)="eliminarUsuario(usuario.id)" 
+                  [disabled]="usuario.role === 'admin'"
+                  class="delete-btn">
+            Eliminar
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

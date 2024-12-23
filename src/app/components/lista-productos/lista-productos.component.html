@@ -1,0 +1,76 @@
+<div class="productos-grid">
+  <div class="filtros-container">
+    <div class="filtro">
+      <input
+        type="text"
+        [(ngModel)]="busqueda"
+        (ngModelChange)="aplicarFiltros()"
+        placeholder="Buscar productos..."
+        class="filtro-input"
+      />
+    </div>
+
+    <div class="filtro">
+      <label>Tipo de producto:</label>
+      <select
+        [(ngModel)]="tipoSeleccionado"
+        (ngModelChange)="aplicarFiltros()"
+        class="filtro-input"
+      >
+        <option value="">Todos los tipos</option>
+        <option *ngFor="let tipo of tiposProductos" [value]="tipo">
+          {{ tipo }}
+        </option>
+      </select>
+    </div>
+
+    <div class="filtros-precio">
+      <div class="filtro">
+        <label>Precio mínimo:</label>
+        <input
+          type="number"
+          [(ngModel)]="precioMin"
+          (ngModelChange)="aplicarFiltros()"
+          placeholder="$0"
+          min="0"
+          class="filtro-input"
+        />
+      </div>
+
+      <div class="filtro">
+        <label>Precio máximo:</label>
+        <input
+          type="number"
+          [(ngModel)]="precioMax"
+          (ngModelChange)="aplicarFiltros()"
+          placeholder="$999999"
+          min="0"
+          class="filtro-input"
+        />
+      </div>
+    </div>
+
+    <button class="btn-limpiar" (click)="limpiarFiltros()">
+      Limpiar filtros
+    </button>
+  </div>
+
+  <div
+    *ngIf="productosFiltrados.length > 0; else noProductos"
+    class="productos-container"
+  >
+    <app-card-producto
+      *ngFor="let producto of productosFiltrados"
+      [producto]="producto"
+      [isAdmin]="isAdmin"
+      (eliminarProducto)="eliminarProducto($event)"
+    >
+    </app-card-producto>
+  </div>
+
+  <ng-template #noProductos>
+    <p class="no-productos">
+      No se encontraron productos con los filtros aplicados.
+    </p>
+  </ng-template>
+</div>

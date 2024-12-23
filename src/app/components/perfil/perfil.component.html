@@ -1,0 +1,103 @@
+<div class="perfil-container">
+  <div class="perfil-card">
+    <div class="perfil-header">
+      <h2>Mi Perfil</h2>
+      <button 
+        class="btn-editar" 
+        (click)="toggleEdicion()"
+        [disabled]="cargando">
+        {{ modoEdicion ? 'Cancelar' : 'Editar' }}
+      </button>
+    </div>
+
+    <div *ngIf="cargando" class="loading">
+      Cargando datos...
+    </div>
+
+    <div *ngIf="error" class="error-message">
+      {{ error }}
+    </div>
+
+    <form [formGroup]="perfilForm" (ngSubmit)="guardarCambios()" *ngIf="!cargando">
+      <div class="form-group">
+        <label for="name">Nombre</label>
+        <input 
+          type="text" 
+          id="name" 
+          formControlName="name"
+          [readonly]="!modoEdicion">
+
+          <div *ngIf="perfilForm.get('name')?.touched" class="error-message">
+            {{ getErrorMessage('name') }}
+          </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input 
+          type="email" 
+          id="email" 
+          formControlName="email"
+          [readonly]="!modoEdicion">
+
+          <div *ngIf="perfilForm.get('email')?.touched" class="error-message">
+            {{ getErrorMessage('email') }}
+          </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <div class="password-container">
+          <input 
+            [type]="showPassword ? 'text' : 'password'" 
+            id="password"
+            formControlName="password"
+            [readonly]="!modoEdicion"
+            >
+            <button type="button" class="button-above-input"  (click)="togglePasswordVisibility()">
+              {{ showPassword ? '◠' : '⚆' }}
+            </button>
+        </div>
+        <div *ngIf="perfilForm.get('password')?.touched" class="error-message">
+          {{ getErrorMessage('password') }}
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="telefono">Teléfono</label>
+        <input 
+          type="tel" 
+          id="telefono" 
+          formControlName="telefono"
+          [readonly]="!modoEdicion">
+
+          <div *ngIf="perfilForm.get('telefono')?.touched && perfilForm.get('telefono')?.errors" 
+               class="error-message">
+            {{ getErrorMessage('telefono') }}
+          </div>
+      </div>
+
+      <div class="form-group">
+        <label for="direccion">Dirección</label>
+        <input 
+          type="text" 
+          id="direccion" 
+          formControlName="direccion"
+          [readonly]="!modoEdicion">
+
+          <div *ngIf="perfilForm.get('direccion')?.touched && perfilForm.get('direccion')?.errors" 
+               class="error-message">
+            {{ getErrorMessage('direccion') }}
+          </div>
+      </div>
+
+      <button 
+        *ngIf="modoEdicion" 
+        type="submit" 
+        class="btn-guardar"
+        [disabled]="perfilForm.invalid || cargando">
+        {{ cargando ? 'Guardando...' : 'Guardar Cambios' }}
+      </button>
+    </form>
+  </div>
+</div>

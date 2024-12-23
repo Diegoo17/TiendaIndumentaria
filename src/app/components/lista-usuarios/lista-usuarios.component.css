@@ -1,0 +1,37 @@
+.usuarios-container {
+  padding: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #f4f4f4;
+}
+
+.delete-btn {
+  background-color: #ff4444;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-btn:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.delete-btn:hover:not(:disabled) {
+  background-color: #cc0000;
+}
