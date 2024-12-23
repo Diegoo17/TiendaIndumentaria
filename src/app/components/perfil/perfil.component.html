@@ -40,7 +40,7 @@
           formControlName="email"
           [readonly]="!modoEdicion">
 
-          <div *ngIf="perfilForm.get('email')?.touched" class="error-message">
+          <div *ngIf="perfilForm.get('email')?.touched && perfilForm.get('email')?.errors" class="error-message">
             {{ getErrorMessage('email') }}
           </div>
       </div>

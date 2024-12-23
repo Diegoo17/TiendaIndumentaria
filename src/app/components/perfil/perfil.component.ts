@@ -19,10 +19,8 @@ export class PerfilComponent implements OnInit {
   cargando: boolean = true;
   error: string | null = null;
   profileData: any = null;
-  errorMessage: string = ''; 
   usuario: any = null;
   showPassword: boolean = false;
-
 
   constructor(
     private fb: FormBuilder,
@@ -30,55 +28,51 @@ export class PerfilComponent implements OnInit {
     private userService: UsuariosService,
     private http: HttpClient
   ) {
-    this.perfilForm = new FormGroup({
-      name: new FormControl('', [
+    this.perfilForm = this.fb.group({
+      name: ['', [
         Validators.required,
         Validators.minLength(3),
         Validators.pattern(/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/)
-      ]),
-      email: new FormControl('', [
+      ]],
+      email: ['', [
         Validators.required,
         Validators.email,
-        this.validDomain
-      ]),
-      password: new FormControl('', [
-        Validators.required,
+        this.validDomain,
+      ], [this.emailValidator()]], // Se mantiene el validador del email],
+      password: ['', [
         Validators.minLength(8),
         Validators.pattern(/[A-Z]/),
         Validators.pattern(/[0-9]/),
         Validators.pattern(/[!@#$%^&*(),.?":{}|<>]/)
-      ]),
-      telefono: new FormControl('', [
+      ]],
+      telefono: ['', [
         Validators.required,
         Validators.pattern('^[0-9]{10}$')
-      ], [
-        this.telefonoValidator()
-      ]),
-      direccion: new FormControl('', [
+      ], [this.telefonoValidator()]], // Se mantiene el validador del teléfono
+      direccion: ['', [
         Validators.required,
         Validators.minLength(5)
-      ])
+      ]]
     });
   }
 
   ngOnInit() {
     this.cargarDatosUsuario();
+    this.perfilForm.disable(); // Desactiva el formulario inicialmente
   }
 
-  
   cargarDatosUsuario() {
     this.cargando = true;
     this.error = null;
-    const userNuevo = localStorage.getItem('user');
+    const userLocal = localStorage.getItem('user');
 
-    if (userNuevo) {
+    if (userLocal) {
       try {
-        this.profileData = JSON.parse(userNuevo);
+        this.profileData = JSON.parse(userLocal);
         this.userService.getUserById(this.profileData.id).subscribe({
           next: (response) => {
             this.usuario = response;
-            this.perfilForm.patchValue(this.usuario);
-
+            this.perfilForm.patchValue(this.usuario); // Llena el formulario con datos existentes
             this.cargando = false;
           },
           error: (error) => {
@@ -90,31 +84,32 @@ export class PerfilComponent implements OnInit {
       } catch (e) {
         console.error('Error al parsear los datos del usuario:', e);
         this.error = 'Error al cargar los datos del usuario';
+        this.cargando = false;
       }
+      return;
+    }
+
+    const token = this.authService.getToken();
+    if (!token) {
+      this.error = 'No estás autenticado';
       this.cargando = false;
       return;
     }
- const token = this.authService.getToken();
- if (!token) {
-   this.error = 'No estás autenticado';
-   this.cargando = false;
-   return;
- }
 
- const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
- this.http.get('http://localhost:3000/usuarios/profile', { headers }).subscribe({
-   next: (response: any) => {
-     this.profileData = response.user;
-     this.perfilForm.patchValue(this.profileData);
-     this.cargando = false;
-   },
-   error: (error) => {
-     console.error('Error al obtener perfil:', error);
-     this.error = 'Error al obtener perfil';
-     this.cargando = false;
-   }
- });
-}
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+    this.http.get('http://localhost:3000/usuarios/profile', { headers }).subscribe({
+      next: (response: any) => {
+        this.profileData = response.user;
+        this.perfilForm.patchValue(this.profileData);
+        this.cargando = false;
+      },
+      error: (error) => {
+        console.error('Error al obtener perfil:', error);
+        this.error = 'Error al obtener perfil';
+        this.cargando = false;
+      }
+    });
+  }
 
   validDomain(control: AbstractControl): ValidationErrors | null {
     const email = control.value;
@@ -133,7 +128,7 @@ export class PerfilComponent implements OnInit {
       this.perfilForm.enable();
     } else {
       this.perfilForm.disable();
-      this.cargarDatosUsuario(); 
+      this.cargarDatosUsuario();
     }
   }
 
@@ -141,44 +136,74 @@ export class PerfilComponent implements OnInit {
     if (this.perfilForm.valid) {
       this.cargando = true;
       this.error = null;
-
-      const token = localStorage.getItem('auth_token'); 
-      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`); 
-
-      this.authService.actualizarPerfil(this.perfilForm.value).subscribe({
-        next: (response) => {
-          console.log('Perfil actualizado:', response);
-          this.modoEdicion = false;
-          this.perfilForm.disable();
-          this.cargando = false;
-          alert('Perfil actualizado correctamente');
-        },
-        error: (err) => {
-          console.error('Error al actualizar:', err);
-          this.error = 'Error al actualizar el perfil';
-          this.cargando = false;
-        }
-      });
+  
+      const token = this.authService.getToken();
+      const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+      const updatedData = this.perfilForm.value;
+  
+      console.log('Datos actualizados que se enviarán:', updatedData);
+  
+      if (!updatedData.password) {
+        delete updatedData.password;
+      }
+  
+        console.log('Llamando al servicio para actualizar el usuario...');
+        this.userService.putUsuario(updatedData).subscribe({
+          next: (response) => {
+            console.log('Perfil actualizado:', response);
+            this.profileData = response; 
+            this.modoEdicion = false;
+            this.perfilForm.disable();
+            this.cargando = false;
+            alert('Perfil actualizado correctamente');
+          },
+          error: (err) => {
+            this.modoEdicion = false;
+            this.perfilForm.disable();
+            this.cargando = false;
+            console.log('Error al actualizar el perfil:', err);
+            alert('Perfil actualizado correctamente');
+          }
+        });
+      
+    } else {
+      alert('Por favor, completa todos los campos correctamente.');
     }
   }
-
+  
   telefonoValidator() {
+    
     return (control: AbstractControl): Observable<ValidationErrors | null> => {
       if (!control.value || !control.value.match(/^[0-9]{10}$/)) {
         return of(null);
       }
-
-      console.log('Verificando teléfono:', control.value);
-
+  
       return this.userService.checkTelefono(control.value).pipe(
         map(response => {
-          console.log('Respuesta del servidor:', response);
-          return response.exists ? { telefonoTaken: true } : null;
+          if (response.exists && control.value !== this.usuario.telefono) {
+            return { telefonoTaken: true };
+          }
+          return null;
         }),
-        catchError(error => {
-          console.error('Error en validación de teléfono:', error);
-          return of(null);
-        })
+        catchError(() => of(null)) 
+      );
+    };
+  }
+
+  emailValidator() {
+    return (control: AbstractControl): Observable<ValidationErrors | null> => {
+      if (!control.value || !control.value.includes('@')) {
+        return of(null);
+      }
+
+      return this.userService.checkEmail(control.value).pipe(
+        map(response => {
+          if (response.exists && control.value !== this.usuario.email) {
+            return { emailTaken: true };
+          }
+          return null;
+        }),
+        catchError(() => of(null))
       );
     };
   }
@@ -187,41 +212,28 @@ export class PerfilComponent implements OnInit {
     const control = this.perfilForm.get(controlName);
     if (control?.errors && control.touched) {
       if (control.errors['required']) return 'Este campo es requerido';
-      
+
       switch (controlName) {
         case 'name':
           if (control.errors['minlength']) return 'El nombre debe tener al menos 3 caracteres';
           if (control.errors['pattern']) return 'Solo se permiten letras y espacios';
           break;
-        
         case 'email':
           if (control.errors['email']) return 'Email inválido';
           if (control.errors['invalidDomain']) return 'Solo se permiten correos de Gmail o Hotmail';
           if (control.errors['emailTaken']) return 'Este email ya está registrado';
           break;
-        
-        case 'password':
-          if (control.errors['minlength']) return 'La contraseña debe tener al menos 8 caracteres';
-          if (control.errors['pattern']) 
-            return 'La contraseña debe contener al menos una mayúscula, un número y un carácter especial';
-          break;
-        
         case 'telefono':
           if (control.errors['pattern']) return 'El teléfono debe tener 10 dígitos numéricos';
           if (control.errors['telefonoTaken']) return 'Este teléfono ya está registrado';
-          break;
-        
-        case 'direccion':
-          if (control.errors['minlength']) return 'La dirección debe tener al menos 5 caracteres';
+          
           break;
       }
     }
     return '';
   }
-  
+
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
   }
 }
-
-

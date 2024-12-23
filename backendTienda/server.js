@@ -89,22 +89,54 @@ app.get('/usuarios/profile', (req, res) => {
       res.status(400).send('Invalid Token');
   }
 });
-app.post('/usuarios/check-email', (req, res) => {
+
+
+app.post('/usuarios/check-email', async(req, res) => {
+  try{
   const { email } = req.body;
-  console.log('Verificando email:', email);
   
-  const query = 'SELECT * FROM users WHERE email = ?';
-  pool.query(query, [email], (err, results) => {
-    if (err) {
-      console.error('Error al verificar email:', err);
-      return res.status(500).json({ message: 'Error en la base de datos' });
-    }
-    return res.json({ 
-      isEmailTaken: results.length > 0,
-      message: results.length > 0 ? 'Email ya registrado' : 'Email disponible'
-    });
+  const [rows] = await pool.promise().query(
+    'SELECT COUNT(*) as count FROM users WHERE email = ?',
+    [email]
+  );
+
+  res.json({ 
+    exists: rows[0].count > 0,
+    message: rows[0].count > 0 ? 'Email ya registrado' : 'Email disponible'
   });
+
+} catch (error) {
+  console.error('Error al verificar teléfono:', error);
+  res.status(500).json({
+    message: 'Error al verificar teléfono',
+    error: error.message
+  });
+}
+
 });
+app.post('/usuarios/check-telefono', async (req, res) => {
+  try {
+    const { telefono } = req.body;
+
+    const [rows] = await pool.promise().query(
+      'SELECT COUNT(*) as count FROM users WHERE telefono = ?',
+      [telefono]
+    );
+
+    res.json({ 
+      exists: rows[0].count > 0,
+      message: rows[0].count > 0 ? 'Teléfono ya registrado' : 'Teléfono disponible'
+    });
+
+  } catch (error) {
+    console.error('Error al verificar teléfono:', error);
+    res.status(500).json({
+      message: 'Error al verificar teléfono',
+      error: error.message
+    });
+  }
+});
+
 app.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -165,57 +197,6 @@ app.get('/usuarios/:id', async (req, res) => {
       success: false,
       message: 'Error al obtener el usuario',
       error: error.message || error 
-    });
-  }
-});
-app.put('/usuarios/profile', verificarToken, async (req, res) => {
-  const { nombre, email, telefono, direccion } = req.body;
-
-  try {
-    await pool.promise().query(
-      'UPDATE users SET name = ?, email = ?, telefono = ?, direccion = ? WHERE id = ?',
-      [nombre, email, telefono, direccion, req.user.userId]
-    );
-
-    const [updatedUser] = await pool.promise().query(
-      'SELECT id, nombre, email, telefono, direccion FROM users WHERE id = ?',
-      [req.user.userId]
-    );
-
-    res.json(updatedUser[0]);
-  } catch (error) {
-    console.error('Error al actualizar perfil:', error);
-    res.status(500).json({ message: 'Error al actualizar el perfil' });
-  }
-});
-app.post('/usuarios/check-telefono', async (req, res) => {
-  try {
-    console.log('Verificando teléfono:', req.body);
-    const { telefono } = req.body;
-
-    if (!telefono) {
-      return res.status(400).json({ 
-        message: 'El teléfono es requerido' 
-      });
-    }
-
-    const [rows] = await pool.promise().query(
-      'SELECT COUNT(*) as count FROM users WHERE telefono = ?',
-      [telefono]
-    );
-
-    console.log('Resultado de la consulta:', rows);
-
-    res.json({ 
-      exists: rows[0].count > 0,
-      message: rows[0].count > 0 ? 'Teléfono ya registrado' : 'Teléfono disponible'
-    });
-
-  } catch (error) {
-    console.error('Error al verificar teléfono:', error);
-    res.status(500).json({
-      message: 'Error al verificar teléfono',
-      error: error.message
     });
   }
 });
@@ -295,8 +276,28 @@ app.delete('/usuarios/:id', (req, res) => {
     });
   });
 });
+app.put('/usuarios/:id', async(req, res) => {
+  const { id } = req.params;  
+  const { name, email, telefono, direccion, password } = req.body;
 
+  // Log para verificar los datos recibidos en el cuerpo de la solicitud
+  try {
+    const sql = 'UPDATE users SET name = ?, email = ?, telefono = ?, direccion = ?, password = ? WHERE id = ?';
+    const values = [name, email, telefono, direccion, password, id];
 
+    // Ejecuta la consulta con promesas
+    const [results] = await pool.promise().query(sql, values);
+
+    if (results.affectedRows === 0) {
+        return res.status(404).send('Usuario no encontrado.');
+    }
+
+    res.status(200).send('Usuario actualizado exitosamente.');
+} catch (err) {
+    console.error('Error en la consulta SQL:', err);
+    res.status(500).send('Error al actualizar usuario.');
+}
+});
 
 //FUNCIONES DE PRODUCTOS
 app.get('/productos', (req, res) => {

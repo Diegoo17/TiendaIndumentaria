@@ -76,4 +76,22 @@ export class UsuariosService {
       })
     );
   }
+
+  putUsuario(usuario: Usuario): Observable<Usuario> {
+    const token = localStorage.getItem('auth_token');
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`
+    });
+  
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    
+    console.log('Enviando solicitud PUT a:', `${this.apiUrl}/${user.id}`);
+    console.log('Datos enviados:', usuario);
+
+  
+    return this.http.put<Usuario>(`${this.apiUrl}/${user.id}`, usuario, { headers }).pipe(  
+      tap(response => console.log('Usuario actualizado:', response)),
+    );
+  }
 }

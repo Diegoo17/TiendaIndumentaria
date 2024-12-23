@@ -105,7 +105,6 @@ input[readonly] {
 }
 
 .error-message {
-  background-color: #f8d7da;
   color: #721c24;
   padding: 1rem;
   border-radius: 4px;
