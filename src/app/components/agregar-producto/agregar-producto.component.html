@@ -47,9 +47,39 @@
           type="file" 
           id="imagen" 
           (change)="onFileSelected($event)" 
-          accept="image/*">
+          accept="image/*"
+          formControlName="imagen"
+          >
+      </div>
+
+      <div class="form-group talles-container">
+        <label for="talles">Selecciona los talles disponibles:</label>
+        <div class="talles-options">
+          <label *ngFor="let talle of tallesDisponibles">
+            <input 
+              type="checkbox" 
+              [value]="talle" 
+              (change)="onTalleChange($event)">
+            {{ talle }}
+          </label>
+        </div>
+  
+        <div *ngFor="let talleGroup of tallesFormArray.controls; let i = index">
+          <div class="talle-stock-group">
+            <label>Talle: {{ talleGroup.get('size')?.value }}</label>
+            <input 
+              type="number" 
+              [formControl]="getStockControl(i)" 
+              placeholder="Cantidad en stock">
+          </div>
+        </div>
+  
+        <div class="error-message" *ngIf="tallesFormArray.errors?.['required'] && submitted">
+          Debes seleccionar al menos un talle.
+        </div>
       </div>
   
+      
       <button type="submit">Agregar Producto</button>
     </form>
   </div>

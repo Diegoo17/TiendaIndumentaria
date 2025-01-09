@@ -1,119 +1,280 @@
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.home-container {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Hero Section - Ocupa toda la pantalla */
 .hero-section {
-    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
-    background-size: cover;
-    background-position: center;
-    height: 60vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    color: #ffffff;
+  background-color: #000000;
+  color: white;
+  padding: 0;
+  text-align: center;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: 700;
+  animation: fadeIn 1s ease-in-out;
+
+}
+
+.hero-subtitle {
+  font-size: 1.5rem;
+  margin-top: 20px;
+  animation: fadeIn 2.5s ease-in-out;
+
+}
+
+.hero-cards {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 30px;
+  animation: fadeIn 4s ease-in-out;
+
+}
+
+.hero-card {
+  background-color: #000000;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 300px;  /* Mayor tamaño */
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: white;
+}
+
+.hero-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  transform: scale(1.2);
+
+}
+
+.hero-card i {
+  font-size: 2rem;
+  margin-bottom: 15px;
+}
+
+.hero-card h3 {
+  font-size: 1.2rem;
+  color: white;
+}
+
+.hero-card p {
+  font-size: 1rem;
+  color: white;
+}
+
+.info-section {
+  padding: 100px 20px;
+  background-color: #000000; 
+  color: white;
+  height: 80vh;
+  justify-content: center; /* Centra verticalmente */
+  align-items: center; /* Centra horizontalmente */
+}
+
+.info-section h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  text-align: center;
+  color: white;
+}
+#address-info-section{
+  height: 70vh;
+}
+
+/* Redes Sociales */
+/* Sección principal */
+.social-info-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 65vh; /* Ocupar toda la altura de la pantalla */
+  margin: 0;
+  padding: 0;
+}
+
+/* Título de la sección */
+.social-title {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  color: #333;
+  text-align: center;
+  text-shadow: 1px 1px 4px rgba(255, 255, 255, 0.8);
+}
+
+/* Contenedor principal de los enlaces */
+.social-links {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Tres columnas iguales */
+  gap: 1.5rem; /* Espacio entre columnas */
+  width: 70%; /* Ancho del contenedor */
+  height: 50%; /* Altura de las columnas */
+}
+
+/* Estilo común para todos los enlaces */
+.social-link {
+  display: flex;
+  flex-direction: column; /* Los elementos dentro se apilan en columna */
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.4rem;
+  font-weight: bold;
+  text-decoration: none;
+  color: white;
+  border-radius: 12px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+/* Iconos de las redes */
+.social-link i {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+/* Colores de las redes sociales */
+.social-link.instagram {
+  background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+}
+
+.social-link.whatsapp {
+  background: #25d366;
+}
+
+.social-link.facebook {
+  background: rgb(2, 2, 216);
+}
+
+/* Efecto hover */
+.social-link:hover {
+  transform: translateY(-10px);
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.3);
+  transform: scale(1.2)
+}
+
+/* Diseño responsivo */
+@media (max-width: 768px) {
+  .social-links {
+    grid-template-columns: 1fr; /* Una columna en pantallas pequeñas */
+    height: auto; /* Ajusta la altura automáticamente */
   }
-  
-  .hero-section .hero-content h1 {
-    font-size: 4rem;
-    margin-bottom: 1rem;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+
+  .social-link {
+    height: auto;
+    padding: 1.5rem;
   }
-  
-  .hero-section .hero-content .tagline {
-    font-size: 1.5rem;
-    font-weight: 300;
-  }
-  
-  .features {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
-    padding: 4rem 2rem;
-    background-color: #f8f9fa;
-  }
-  
-  .feature-card {
-    text-align: center;
-    padding: 2rem;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
-    transition: transform 0.3s ease;
-    cursor: pointer;
-  }
-  
-  .feature-card:hover {
-    transform: translateY(-5px);
-    background-color: #f8f9fa;
-  }
-  
-  .feature-card i {
-    font-size: 2.5rem;
-    color: #000000;
-    margin-bottom: 1rem;
-  }
-  
-  .feature-card h3 {
-    color: #2c3e50;
-    margin-bottom: 1rem;
-  }
-  
-  .contact-section {
-    padding: 4rem 2rem;
-    text-align: center;
-    background-color: white;
-  }
-  
-  .contact-section h2 {
-    color: #2c3e50;
-    margin-bottom: 2rem;
-  }
-  
-  .contact-info {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-    flex-wrap: wrap;
-  }
-  
-  .contact-info a {
-    padding: 1rem 2rem;
-    border-radius: 30px;
-    text-decoration: none;
-    color: #ffffff;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: transform 0.3s ease;
-  }
-  
-  .contact-info a:hover {
-    transform: scale(1.05);
-  }
-  
-  .contact-info a i {
-    font-size: 1.2rem;
-  }
-  
-  .whatsapp-btn {
-    background-color: #25D366;
-  }
-  
-  .instagram-btn {
-    background: linear-gradient(45deg, #405DE6, #5851DB, #833AB4, #C13584, #E1306C, #FD1D1D);
-  }
-  
-  @media (max-width: 768px) {
-    .hero-section {
-      height: 50vh;
-    }
-  
-    .hero-section .hero-content h1 {
-      font-size: 2.5rem;
-    }
-  
-    .features {
-      padding: 2rem 1rem;
-    }
-  
-    .contact-section {
-      padding: 2rem 1rem;
-    }
-  }
+}
+
+
+/* Grid de Mayoristas */
+.wholesale-grid, .store-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Mayor tamaño de las tarjetas */
+  gap: 20px;
+}
+
+.wholesale-item, .store-item{
+  text-align: center;
+  background-color: #000000; 
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.wholesale-item:hover, .store-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  transform: scale(1.2);
+}
+
+.wholesale-item i, .store-item i {
+  font-size: 3rem;
+  color: white;
+  margin-bottom: 10px;
+
+}
+
+.wholesale-item h3, .store-item h3{
+  font-size: 1.5rem;
+  color: white;
+  margin-bottom: 10px;
+}
+
+.wholesale-item p, .store-item p {
+  font-size: 1.2rem;
+  color: white;
+}
+
+/* Footer */
+.footer {
+  background-color: #222;
+  color: white;
+  text-align: center;
+  padding: 20px 10px;
+}
+
+.footer p {
+  margin: 0;
+}
+
+
+
+/* Botón sticky */
+.btn-regresar-sticky {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: black;
+  border: none;
+  padding: 10px;
+  border-radius: 50%;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+}
+
+.btn-regresar-sticky svg {
+  fill: white;
+}
+
+.map-container {
+  width: 100%;
+  max-width: 1200px; /* Puedes ajustar este valor */
+  margin: 0 auto; /* Centra el mapa */
+}
+
+iframe {
+  width: 100%; /* Ocupa todo el ancho disponible */
+  height: 450px; /* Altura del mapa */
+  border: none; /* Sin borde */
+}
+
+h2 {
+  text-align: center; /* Centra el título */
+  font-size: 2em;
+  margin-bottom: 20px;
+}

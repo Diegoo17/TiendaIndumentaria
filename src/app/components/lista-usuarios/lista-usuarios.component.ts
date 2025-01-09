@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UsuariosService } from '../../services/usuarioService/usuarios.service';
 import { Usuario } from '../../interface/usuario';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-lista-usuarios',
@@ -30,26 +31,32 @@ export class ListaUsuariosComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error detallado:', error);
-        if (error.status === 403) {
-          alert('No tienes permisos para ver la lista de usuarios');
-        } else {
-          alert('Error al cargar la lista de usuarios');
-        }
       }
     });
   }
 
   eliminarUsuario(id: number | undefined) {
-    if (id && confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
-      this.usuariosService.eliminarUsuario(id).subscribe({
-        next: () => {
-          this.cargarUsuarios();
-        },
-        error: (error) => {
-          console.error('Error al eliminar usuario:', error);
-          alert('Error al eliminar el usuario');
+    if (id) {
+      Swal.fire({
+        title: '¿Estás seguro?',
+        text: 'Una vez eliminado, no podrás recuperar este usuario.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.usuariosService.eliminarUsuario(id).subscribe({
+            next: () => {
+              this.cargarUsuarios();
+            },
+            error: (error) => {
+              console.error('Error al eliminar usuario:', error);
+            }
+          });
         }
       });
     }
   }
+  
 }

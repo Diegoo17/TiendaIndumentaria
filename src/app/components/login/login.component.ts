@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -26,7 +27,6 @@ export class LoginComponent {
     }
   }
 
-  
   onSubmit() {
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
@@ -35,24 +35,38 @@ export class LoginComponent {
         this.authService.login({ email, password }).subscribe({
           next: (response) => {
             console.log('Respuesta del servidor:', response);
-
+  
             if (response && response.token) {
               localStorage.setItem('token', response.token);
-             localStorage.setItem('userId', response.userId.toString());
+              localStorage.setItem('userId', response.userId.toString());
               this.router.navigate(['/']);
             } else {
-              console.error('No se recibió token en la respuesta');
-              alert('Error en el inicio de sesión');
+              Swal.fire({
+                title: 'Error',
+                text: 'Error en el inicio de sesión. No se recibió token en la respuesta.',
+                icon: 'error',
+                confirmButtonText: 'Cerrar'
+              });
             }
           },
           error: (error) => {
             console.error('Error en el login:', error);
             if (error.status === 401) {
-              alert('Credenciales inválidas');
+              Swal.fire({
+                title: 'Credenciales inválidas',
+                text: 'El correo o la contraseña no son correctos.',
+                icon: 'warning',
+                confirmButtonText: 'Intentar nuevamente'
+              });
             } else {
-              alert('Error en el servidor. Por favor, intente más tarde.');
+              Swal.fire({
+                title: 'Error en el servidor',
+                text: 'Por favor, intente más tarde.',
+                icon: 'error',
+                confirmButtonText: 'Cerrar'
+              });
             }
-          },
+          }
         });
       }
     }

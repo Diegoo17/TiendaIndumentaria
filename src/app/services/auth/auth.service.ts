@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { CarritoService } from '../carrito/carrito.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +16,9 @@ export class AuthService {
   public currentUser$ = this.currentUserSubject.asObservable();
   private isAuthenticatedSubject = new BehaviorSubject<boolean>(false);
   isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
-
-  constructor(private http: HttpClient,private router: Router){
+  private userIdKey = 'user_id';
+  private userId: string | null = null;
+  constructor(private http: HttpClient,private router: Router, private carritoService: CarritoService) {
     const token = this.getToken();
     if (token) {
       this.isAuthenticatedSubject.next(true);
@@ -33,16 +35,14 @@ export class AuthService {
     return this.http.post(`${this.apiUrl}/login`, credentials).pipe(
       tap((response: any) => {
         if (response.token) {
-          localStorage.setItem('auth_token', response.token);
-          localStorage.setItem('user_role', response.role);
-  
-          const user = {
-            id: response.userId,
-            role: response.role,
-          };
-          localStorage.setItem('user', JSON.stringify(user));
-  
+          localStorage.setItem(this.userIdKey, response.userId);
+          localStorage.setItem(this.tokenKey, response.token); 
+          localStorage.setItem(this.userRoleKey, response.role); 
           this.isAuthenticatedSubject.next(true);
+          localStorage.setItem('userId', JSON.stringify({ id: response.userId }));
+
+          const userId = response.userId;
+          this.carritoService.cargarCarrito(userId);
           console.log('Token guardado:', response.token);
         }
       })
@@ -51,7 +51,6 @@ export class AuthService {
 
   isAdmin(): boolean {
     const role = localStorage.getItem(this.userRoleKey);
-    console.log('Rol actual:', role);
     return role === 'admin';
   }
 
@@ -60,15 +59,19 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.removeItem(this.tokenKey);
+    const userId = this.getUser(); // Asegúrate de que esto devuelve el ID correcto
+    
+      localStorage.removeItem(this.tokenKey);
     localStorage.removeItem(this.userRoleKey);
     localStorage.removeItem('user');
-    
+    localStorage.removeItem(this.userIdKey);
+  
     this.currentUserSubject.next(null);
     this.isAuthenticatedSubject.next(false);
-    
+  
     this.router.navigate(['/login']);
   }
+  
 
   setToken(token: string) {
     localStorage.setItem(this.tokenKey, token);
@@ -93,8 +96,14 @@ export class AuthService {
     this.isAuthenticatedSubject.next(value);
   }
 
-  getUser(): any {
-    return JSON.parse(localStorage.getItem('user') || '{}');
+  getUser(): string | null {
+    const userId = localStorage.getItem(this.userIdKey);
+    console.log('AuthService - UserID:', userId);
+    return userId;
+  }
+  setUser(userId: string | null, token : string) {
+    localStorage.setItem(this.tokenKey, token);
+    localStorage.setItem('user', JSON.stringify({ id: userId }));  // Almacena el nuevo usuario en localStorage
   }
 
   actualizarPerfil(datos: any): Observable<any> {

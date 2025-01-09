@@ -12,14 +12,27 @@ export class UsuariosService {
 
   constructor(private http: HttpClient) { }
 
-  checkTelefono(telefono: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/check-telefono`, { telefono });
-  }
+  
 
   registrarUsuario(usuario: Usuario): Observable<Usuario> {
-    return this.http.post<Usuario>(`${this.apiUrl}/registro`, usuario);
+    return this.http.post<Usuario>(`${this.apiUrl}/registro`, usuario).pipe(
+      tap(response => console.log('Usuario registrado:', response)),
+      catchError(error => {
+        console.error('Error al registrar usuario:', error);
+        return throwError(() => error);
+      })
+    );
   }
-
+  registrarAdmin(usuario: Usuario): Observable<Usuario> {
+    return this.http.post<Usuario>(`${this.apiUrl}/registrar-admin`, usuario).pipe(
+      tap(response => console.log('Admin registrado:', response)),
+      catchError(error => {
+        console.error('Error al registrar usuario:', error);
+        return throwError(() => error);
+      })
+    );
+  }
+  
   getUsuarios(): Observable<any> {
     const token = localStorage.getItem('auth_token');
     
@@ -33,7 +46,6 @@ export class UsuariosService {
     });
 
     return this.http.get<any>(`${this.apiUrl}`, { headers }).pipe(
-      tap(response => console.log('Respuesta del servidor:', response)),
       catchError(error => {
         console.error('Error al obtener usuarios:', error);
         return throwError(() => error);
@@ -44,7 +56,10 @@ export class UsuariosService {
   checkEmail(email: string): Observable<any> {
     return this.http.post(`${this.apiUrl}/check-email`, { email });
   }
-
+  checkTelefono(telefono: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/check-telefono`, { telefono });
+  }
+  
   eliminarUsuario(id: number): Observable<any> {
     const token = localStorage.getItem('auth_token');
     const headers = new HttpHeaders({
@@ -77,21 +92,19 @@ export class UsuariosService {
     );
   }
 
-  putUsuario(usuario: Usuario): Observable<Usuario> {
+  putUsuario(userId : string | any, userData : any): Observable<Usuario> {
     const token = localStorage.getItem('auth_token');
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
     });
   
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    
-    console.log('Enviando solicitud PUT a:', `${this.apiUrl}/${user.id}`);
-    console.log('Datos enviados:', usuario);
-
-  
-    return this.http.put<Usuario>(`${this.apiUrl}/${user.id}`, usuario, { headers }).pipe(  
-      tap(response => console.log('Usuario actualizado:', response)),
+    return this.http.put(`${this.apiUrl}/${userId}`, userData, { headers }).pipe(
+      tap((response: any) => {
+        console.log('Perfil actualizado:', response);
+      })
     );
+    
   }
+
 }

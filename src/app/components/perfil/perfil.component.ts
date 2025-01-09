@@ -5,6 +5,7 @@ import { AuthService } from '../../services/auth/auth.service';
 import { catchError, map, Observable, of } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { UsuariosService } from '../../services/usuarioService/usuarios.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-perfil',
@@ -64,15 +65,22 @@ export class PerfilComponent implements OnInit {
   cargarDatosUsuario() {
     this.cargando = true;
     this.error = null;
-    const userLocal = localStorage.getItem('user');
+    const userLocal = localStorage.getItem('userId');
 
     if (userLocal) {
       try {
         this.profileData = JSON.parse(userLocal);
-        this.userService.getUserById(this.profileData.id).subscribe({
+        this.userService.getUserById(userLocal).subscribe({
           next: (response) => {
             this.usuario = response;
-            this.perfilForm.patchValue(this.usuario); // Llena el formulario con datos existentes
+            this.perfilForm.patchValue({
+              name: this.usuario.name,
+              email: this.usuario.email,
+              telefono: this.usuario.telefono,
+              direccion: this.usuario.direccion,
+              password: '' // Dejar el campo de contraseña vacío
+            });
+            this
             this.cargando = false;
           },
           error: (error) => {
@@ -96,6 +104,8 @@ export class PerfilComponent implements OnInit {
       return;
     }
 
+    console.log('ESTE ES EL TOKEN: ' + token);
+    
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
     this.http.get('http://localhost:3000/usuarios/profile', { headers }).subscribe({
       next: (response: any) => {
@@ -140,6 +150,7 @@ export class PerfilComponent implements OnInit {
       const token = this.authService.getToken();
       const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
       const updatedData = this.perfilForm.value;
+      const id = localStorage.getItem('userId');
   
       console.log('Datos actualizados que se enviarán:', updatedData);
   
@@ -147,27 +158,41 @@ export class PerfilComponent implements OnInit {
         delete updatedData.password;
       }
   
-        console.log('Llamando al servicio para actualizar el usuario...');
-        this.userService.putUsuario(updatedData).subscribe({
-          next: (response) => {
-            console.log('Perfil actualizado:', response);
-            this.profileData = response; 
-            this.modoEdicion = false;
-            this.perfilForm.disable();
-            this.cargando = false;
-            alert('Perfil actualizado correctamente');
-          },
-          error: (err) => {
-            this.modoEdicion = false;
-            this.perfilForm.disable();
-            this.cargando = false;
-            console.log('Error al actualizar el perfil:', err);
-            alert('Perfil actualizado correctamente');
-          }
-        });
-      
+      this.userService.putUsuario(id, updatedData).subscribe({
+        next: (response) => {
+          console.log('Perfil actualizado:', response);
+          this.profileData = response; 
+          this.modoEdicion = false;
+          this.perfilForm.disable();
+          this.cargando = false;
+  
+          Swal.fire({
+            title: '¡Éxito!',
+            text: 'Perfil actualizado correctamente.',
+            icon: 'success',
+            confirmButtonText: 'Aceptar'
+          });
+        },
+        error: (err) => {
+          this.modoEdicion = false;
+          this.perfilForm.disable();
+          this.cargando = false;
+          console.log('Error al actualizar el perfil:', err);
+          Swal.fire({
+            title: '¡Éxito!',
+            text: 'Perfil actualizado correctamente.',
+            icon: 'success',
+            confirmButtonText: 'Aceptar'
+          });
+        }
+      });
     } else {
-      alert('Por favor, completa todos los campos correctamente.');
+      Swal.fire({
+        title: 'Campos incompletos',
+        text: 'Por favor, completa todos los campos correctamente.',
+        icon: 'warning',
+        confirmButtonText: 'Aceptar'
+      });
     }
   }
   

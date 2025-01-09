@@ -1,0 +1,93 @@
+<div class="admin-lista-productos">
+  <h1>Gestión de Productos</h1>
+
+  <div class="filtros">
+    <input
+      type="text"
+      placeholder="Buscar producto"
+      [(ngModel)]="busqueda"
+      (input)="filtrarProductos()"
+    />
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Precio</th>
+        <th>Stock (total)</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let producto of productosFiltrados">
+        <td>{{ producto.name }}</td>
+        <td>${{ producto.price }}</td>
+        <td>
+          <div *ngFor="let size of producto.talles">
+            {{ size.stock }} (Talle: {{ size.size }})
+          </div>
+        </td>
+        <td>
+          <button class="btn-detalles" (click)="verDetalles(producto.id)">Ver detalles</button>
+          <button class="btn-eliminar" (click)="eliminarProducto(producto.id)">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Fondo oscuro -->
+  <div
+    *ngIf="productoSeleccionado"
+    class="card-overlay"
+    (click)="productoSeleccionado = null"
+  ></div>
+
+  <!-- Card para editar producto -->
+  <div *ngIf="productoSeleccionado" class="card producto-editar">
+    <h2>Editar Producto</h2>
+    <form (ngSubmit)="actualizarProducto()">
+      <div class="form-group">
+        <label for="name">Nombre</label>
+        <input
+          type="text"
+          id="name"
+          [(ngModel)]="productoSeleccionado.name"
+          name="name"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="price">Precio</label>
+        <input
+          type="number"
+          id="price"
+          [(ngModel)]="productoSeleccionado.price"
+          name="price"
+          required
+        />
+      </div>
+
+      <div *ngFor="let talle of productoSeleccionado.talles; let i = index" class="form-group">
+        <h3>Talle: {{ talle.size }}</h3>
+        <label for="stock-{{ i }}">Stock</label>
+        <input
+          type="number"
+          id="stock-{{ i }}"
+          [(ngModel)]="talle.stock"
+          name="stock-{{ i }}"
+        />
+      </div>
+
+      <button type="submit" class="btn-actualizar">Actualizar</button>
+      <button
+        type="button"
+        class="btn-cancelar"
+        (click)="productoSeleccionado = null"
+      >
+        Cancelar
+      </button>
+    </form>
+  </div>
+</div>

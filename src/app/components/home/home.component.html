@@ -1,39 +1,149 @@
-<div class="hero-section">
-    <div class="hero-content">
-      <h1>ProfitMDQ</h1>
-      <p class="tagline">Tu estilo, tu esencia</p>
-    </div>
-  </div>
-  
-  <section class="features">
+<div class="home-container"> 
+
+  <button 
+  class="btn-regresar-sticky" 
+  (click)="scrollToInicio()"
+  >
+  <svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    viewBox="0 0 24 24" 
+    fill="black" 
+    width="30px" 
+    height="30px"
+    aria-hidden="true"
+  >
+    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+  </svg>
+</button>
+
+  <!-- Hero Section -->
+  <section class="hero-section" id="inicio">
+    <h1 class="hero-title">¡Bienvenidos a ProfitMDQ!</h1>
+    <p class="hero-subtitle">Indumentaria Mayorista y Minorista</p>
     
-    <div class="feature-card" [routerLink]="['/productos']">
-      <i class="fas fa-tshirt"></i>
-      <h3>Indumentaria</h3>
-      <p>Mayorista y Minorista</p>
-    </div>
-    
-    <div class="feature-card">
-      <i class="fas fa-truck"></i>
-      <h3>Envíos</h3>
-      <p>A todo el país 🇦🇷</p>
-    </div>
-  
-    <div class="feature-card">
-      <i class="fas fa-store"></i>
-      <h3>Visítanos</h3>
-      <p>Entre Rios 1748, Mar del Plata</p>
+    <!-- Cards interactivas -->
+    <div class="hero-cards">
+      <a class="hero-card" id="wholesale-info-card" (click)="scrollToSection('wholesale-info-section')">
+        <i class="fas fa-box-open"></i>
+        <h3>Información Mayoristas</h3>
+        <p>Haz clic aquí para más detalles</p>
+      </a>
+      <a class="hero-card" id="store-info-card" (click)="scrollToSection('store-info-section')">
+        <i class="fab fa-instagram"></i>
+        <h3>Tienda Fisica</h3>
+        <p>Conoce nuestra tienda</p>
+      </a>
+      <a class="hero-card" id="address-info-card" (click)="scrollToSection('address-info-section')">
+        <i class="fas fa-map-marker-alt"></i>
+        <h3>Dirección</h3>
+        <p>Visítanos en persona</p>
+      </a>
+      <a class="hero-card" id="social-info-card" (click)="scrollToSection('social-info-section')">
+        <i class="fab fa-instagram"></i>
+        <h3>Redes Sociales</h3>
+        <p>Conoce nuestras redes</p>
+      </a>
     </div>
   </section>
   
-  <section class="contact-section">
-    <h2>Contactanos</h2>
-    <div class="contact-info">
-      <a href="https://wa.me/message/TKWZTL4TOU7MN1" class="whatsapp-btn" target="_blank">
-        <i class="fab fa-whatsapp"></i> WhatsApp
+  <!-- Información para Mayoristas -->
+  <section id="wholesale-info-section" class="info-section">
+    <h2>Información para Mayoristas</h2>
+    <div class="wholesale-grid">
+      <div class="wholesale-item">
+        <i class="fas fa-box-open"></i>
+        <h3>Compra mínima</h3>
+        <p>12 prendas surtidas</p>
+      </div>
+      <div class="wholesale-item">
+        <i class="fas fa-sync-alt"></i>
+        <h3>Cambios</h3>
+        <p>Por talle o color</p>
+      </div>
+      <div class="wholesale-item">
+        <i class="fas fa-credit-card"></i>
+        <h3>Forma de Pago</h3>
+        <p>Efectivo o transferencia</p>
+      </div>
+      <div class="wholesale-item">
+        <i class="fas fa-percent"></i>
+        <h3>Descuento</h3>
+        <p>20% si abonas en efectivo</p>
+      </div>
+    </div>
+  </section>
+
+   <section id="store-info-section" class="info-section">
+    <h2>Información de la Tienda Física</h2>
+
+    <div class="store-info-grid">
+      <div class="store-item">
+        <i class="fas fa-clock"></i>
+        <h3>Horarios</h3>
+        <p>Lunes a Viernes de 10:00 a 18:00
+            Sábados de 10:00 a 19:00
+            Domingos Cerrados</p>
+      </div>
+      <div class="store-item">
+        <i class="fas fa-truck"></i>
+        <h3>Envios</h3>
+        <p>Envíos a todo el país por Correo Argentino</p>
+      </div>
+      <div class="store-item">
+        <i class="fas fa-motorcycle"></i>
+        <h3>Envíos locales</h3>
+        <p>Envíos a Mar del Plata por motomensajería</p>
+      </div>
+      <div class="store-item">
+        <i class="fas fa-car"></i>
+        <h3>Pick Up</h3>
+        <p>Recoge tu pedido en nuestro local</p>
+      </div>
+    </div>
+    
+  </section>
+
+  
+
+  <!-- Dirección con Google Maps -->
+  <section id="address-info-section" class="info-section">
+    <h2 style="text-align: center;">Nuestra Dirección</h2>
+    <div class="map-container">
+      <iframe 
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3143.937226463929!2d-57.54573902434211!3d-38.00192464481476!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9584dd4fc5cd69a9%3A0xcb98d69b326e88bd!2sProFit%20MdQ!5e0!3m2!1ses-419!2sar!4v1735485110514!5m2!1ses-419!2sar" 
+        width="100%" 
+        height="450" 
+        style="border:0;" 
+        allowfullscreen="" 
+        loading="lazy" 
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+  </section>
+
+  <!-- Redes Sociales -->
+  <section id="social-info-section" class="info-section social-info-section">
+    <h2 class="social-title">Síguenos en redes</h2>
+    <div class="social-links">
+      <a href="https://www.instagram.com/profitmdq/" target="_blank" class="social-link instagram">
+        <i class="fab fa-instagram"></i>
+        <span>Instagram</span>
       </a>
-      <a href="https://www.instagram.com/profitmdq/" class="instagram-btn" target="_blank">
-        <i class="fab fa-instagram"></i> Instagram
+      <a href="https://api.whatsapp.com/message/TKWZTL4TOU7MN1?autoload=1&app_absent=0" target="_blank" class="social-link whatsapp">
+        <i class="fab fa-whatsapp"></i>
+        <span>WhatsApp</span>
+      </a>
+      <a href="https://www.facebook.com/profitmdq/" target="_blank" class="social-link facebook">
+        <i class="fab fa-facebook"></i>
+        <span>Facebook</span>
       </a>
     </div>
   </section>
+  
+  
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>&copy; 2024 ProfitMDQ. Todos los derechos reservados.</p>
+  </footer>
+</div>

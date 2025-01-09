@@ -35,3 +35,8 @@ th {
 .delete-btn:hover:not(:disabled) {
   background-color: #cc0000;
 }
+
+
+tbody tr td {
+  color: #fff; /* Letra blanca para las celdas de la tabla */
+}

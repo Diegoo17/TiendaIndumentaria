@@ -11,7 +11,6 @@ import { CarritoService } from '../../services/carrito/carrito.service';
 })
 export class CarritoComponent implements OnInit {
 
-
   private carritoService = inject(CarritoService);
   
   items$ = this.carritoService.getCarritoItems();
@@ -32,4 +31,5 @@ export class CarritoComponent implements OnInit {
   limpiarCarrito() {
     this.carritoService.limpiarCarrito();
   }
+
 }

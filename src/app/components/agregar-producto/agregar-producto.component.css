@@ -64,3 +64,40 @@
   input[type="file"] {
     padding: 0.5rem 0;
   }
+
+
+  .talles-container {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+  }
+  
+  .talles-container label {
+    font-size: 14px;
+    color: #555;
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+  }
+  
+  .talles-options {
+    display: flex;
+    flex-wrap: wrap; /* Permite que los elementos se ajusten en filas si son muchos */
+    gap: 10px; /* Espacio entre cada checkbox */
+    margin-top: 10px;
+  }
+  
+  .talles-options input[type="checkbox"] {
+    margin-right: 5px; /* Espacio entre el checkbox y el texto */
+    cursor: pointer;
+  }
+  
+  .error-message {
+    color: #e74c3c;
+    font-size: 12px;
+    margin-top: 10px;
+  }
+  

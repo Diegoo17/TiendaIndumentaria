@@ -11,7 +11,7 @@ import { AuthService } from '../../services/auth/auth.service';
   standalone: true,
   imports: [CommonModule, CardProductoComponent, FormsModule],
   templateUrl: './lista-productos.component.html',
-  styleUrl: './lista-productos.component.css', 
+  styleUrls: ['./lista-productos.component.css'], 
 })
 export class ListaProductosComponent implements OnInit {
   productos: Producto[] = [];
@@ -22,6 +22,7 @@ export class ListaProductosComponent implements OnInit {
   tipoSeleccionado: string = '';
   tiposProductos: string[] = [];
   isAdmin: boolean = false;
+  filtrosVisible: boolean = false; // Estado para la visibilidad de los filtros
 
   constructor(
     private productosService: ProductosService,
@@ -36,7 +37,6 @@ export class ListaProductosComponent implements OnInit {
   cargarProductos(): void {
     this.productosService.getProductos().subscribe({
       next: (data: Producto[]) => {
-        console.log('Datos recibidos:', data);
         this.productos = data;
         this.productosFiltrados = [...data];
         this.tiposProductos = [...new Set(data.map(producto => producto.name))]; 
@@ -47,30 +47,34 @@ export class ListaProductosComponent implements OnInit {
     });
   }
 
-aplicarFiltros(): void {
-  this.productosFiltrados = this.productos.filter(producto => {
-    const nombre = producto.name || ''; 
-    const precio = producto.price ? parseFloat(producto.price) : 0; 
+  // Función para alternar la visibilidad de los filtros
+  toggleFiltros(): void {
+    this.filtrosVisible = !this.filtrosVisible;
+  }
 
-    const nombreMatch = !this.busqueda || 
-      nombre.toLowerCase().includes(this.busqueda.toLowerCase());
+  // Función para aplicar los filtros
+  aplicarFiltros(): void {
+    this.productosFiltrados = this.productos.filter(producto => {
+      const nombre = producto.name || ''; 
+      const precio = producto.price ? parseFloat(producto.price) : 0; 
 
-    const tipoMatch = !this.tipoSeleccionado || 
-      this.tipoSeleccionado === nombre;
+      const nombreMatch = !this.busqueda || 
+        nombre.toLowerCase().includes(this.busqueda.toLowerCase());
 
-    const precioMinMatch = this.precioMin === null || 
-      precio >= this.precioMin;
+      const tipoMatch = !this.tipoSeleccionado || 
+        this.tipoSeleccionado === nombre;
 
-    const precioMaxMatch = this.precioMax === null || 
-      precio <= this.precioMax;
+      const precioMinMatch = this.precioMin === null || 
+        precio >= this.precioMin;
 
-    return nombreMatch && tipoMatch && precioMinMatch && precioMaxMatch;
-  });
+      const precioMaxMatch = this.precioMax === null || 
+        precio <= this.precioMax;
 
-  console.log('Productos filtrados:', this.productosFiltrados);
-}
-  
+      return nombreMatch && tipoMatch && precioMinMatch && precioMaxMatch;
+    });
+  }
 
+  // Función para limpiar los filtros
   limpiarFiltros(): void {
     this.busqueda = '';
     this.precioMin = null;
@@ -79,6 +83,7 @@ aplicarFiltros(): void {
     this.productosFiltrados = [...this.productos];
   }
 
+  // Función para eliminar un producto
   eliminarProducto(id: number): void {
     this.productosService.eliminarProducto(id).subscribe({
       next: () => {

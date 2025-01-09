@@ -8,6 +8,7 @@ import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Usuario } from '../../interface/usuario';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-agregar-usuario',
@@ -16,6 +17,8 @@ import { Router } from '@angular/router';
   templateUrl: './agregar-usuario.component.html',
   styleUrl: './agregar-usuario.component.css'
 })
+
+
 export class AgregarUsuarioComponent implements OnInit {
   form: FormGroup;
   productos: any[] = [];
@@ -204,25 +207,37 @@ export class AgregarUsuarioComponent implements OnInit {
     if (this.form.valid) {
       const formData = this.form.value;
       const userData: Omit<Usuario, 'id'> = {
-        nombre: formData.nombre,
+        name: formData.nombre,
         email: formData.email,
         telefono: formData.telefono,
         password: formData.password,
         direccion: formData.direccion,
         role: 'user'
       };
-
+  
       console.log('Datos a enviar:', userData);
-
+  
       this.userService.registrarUsuario(userData).subscribe({
         next: (response) => {
-          alert('Usuario registrado correctamente');
-          this.router.navigate(['/login']);
+          Swal.fire({
+            title: '¡Éxito!',
+            text: 'Usuario registrado correctamente.',
+            icon: 'success',
+            confirmButtonText: 'Aceptar'
+          }).then(() => {
+            this.router.navigate(['/login']);
+          });
         },
         error: (error) => {
-          console.error('Error detallado:', error.error);
+          Swal.fire({
+            title: '¡Error!',
+            text: 'No se pudo registrar el usuario. Por favor, inténtalo de nuevo.',
+            icon: 'error',
+            confirmButtonText: 'Cerrar'
+          });
         }
       });
+      
     }
   }
 

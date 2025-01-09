@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,14 +11,18 @@ export class CarritoService {
   private totalPrecio = new BehaviorSubject<number>(0);
 
   constructor() {
-    const savedCart = localStorage.getItem('carrito');
-    if (savedCart) {
-      const cart = JSON.parse(savedCart);
-      this.carritoItems.next(cart);
-      this.actualizarTotales();
-    }
   }
 
+  cargarCarrito(userId: string | null) {
+    if (userId) {
+      const savedCart = localStorage.getItem(`carrito_${userId}`);
+      this.carritoItems.next(savedCart ? JSON.parse(savedCart) : []);
+      this.actualizarTotales();
+      console.log('Carrito cargado para el usuario:', userId);
+    } else {
+      console.log('No se pudo cargar el carrito: UserID es nulo.');
+    }
+  }
   getCarritoItems() {
     return this.carritoItems.asObservable();
   }
@@ -29,8 +34,11 @@ export class CarritoService {
   getTotalPrecio() {
     return this.totalPrecio.asObservable();
   }
-
   agregarAlCarrito(producto: any) {
+    const userId = this.getUserId();
+    console.log("El usuario con este id agrego un producto al carrito: ", userId);
+    if (!userId) return;
+
     const currentItems = this.carritoItems.value;
     const itemExistente = currentItems.find(item => item.id === producto.id);
 
@@ -42,25 +50,33 @@ export class CarritoService {
     }
 
     this.actualizarTotales();
-    this.guardarEnLocalStorage();
+    this.guardarEnLocalStorage(userId);
   }
 
   removerDelCarrito(productoId: number) {
+    const userId = this.getUserId();
+    console.log("El usuario con este id removio un producto del carrito: ", userId);
+
+    if (!userId) return;
+
     const currentItems = this.carritoItems.value;
     const nuevosItems = currentItems.filter(item => item.id !== productoId);
     this.carritoItems.next(nuevosItems);
     this.actualizarTotales();
-    this.guardarEnLocalStorage();
+    this.guardarEnLocalStorage(userId);
   }
 
   actualizarCantidad(productoId: number, cantidad: number) {
+    const userId = this.getUserId();
+    if (!userId) return;
+
     const currentItems = this.carritoItems.value;
     const item = currentItems.find(item => item.id === productoId);
     if (item) {
       item.cantidad = cantidad;
       this.carritoItems.next([...currentItems]);
       this.actualizarTotales();
-      this.guardarEnLocalStorage();
+      this.guardarEnLocalStorage(userId);
     }
   }
 
@@ -71,12 +87,36 @@ export class CarritoService {
   }
 
   limpiarCarrito() {
+    const userId = this.getUserId();
+    if (!userId) return;
+
     this.carritoItems.next([]);
     this.actualizarTotales();
-    localStorage.removeItem('carrito');
+    localStorage.removeItem(`carrito_${userId}`);
   }
 
-  private guardarEnLocalStorage() {
-    localStorage.setItem('carrito', JSON.stringify(this.carritoItems.value));
+  private guardarEnLocalStorage(userId: string) {
+    const key = `carrito_${userId}`;
+    const carritoActual = this.carritoItems.value;
+  
+    localStorage.setItem(key, JSON.stringify(carritoActual));
+  
+    console.log('Contenido guardado en localStorage:', localStorage.getItem(key));
+  }
+
+  private getUserId(): string | null {
+    const userId = localStorage.getItem('userId');
+    return userId;  
+  }
+  iniciarSesionUsuario() {
+    const userId = this.getUserId();
+    if (userId) {
+      const savedCart = localStorage.getItem(`carrito_${userId}`);
+      this.carritoItems.next(savedCart ? JSON.parse(savedCart) : []);
+      this.actualizarTotales();
+      console.log('Carrito cargado para el usuario:', userId);
+    } else {
+      console.log('No se pudo cargar el carrito: UserID es nulo.');
+    }
   }
 }

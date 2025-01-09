@@ -1,5 +1,8 @@
 <div class="productos-grid">
-  <div class="filtros-container">
+  <!-- Botón para mostrar/ocultar los filtros -->
+  <button class="btn-filtros" (click)="toggleFiltros()">Mostrar Filtros</button>
+  
+  <div class="filtros-container" [ngClass]="{'filtros-visible': filtrosVisible}">
     <div class="filtro">
       <input
         type="text"
@@ -7,21 +10,7 @@
         (ngModelChange)="aplicarFiltros()"
         placeholder="Buscar productos..."
         class="filtro-input"
-      />
-    </div>
-
-    <div class="filtro">
-      <label>Tipo de producto:</label>
-      <select
-        [(ngModel)]="tipoSeleccionado"
-        (ngModelChange)="aplicarFiltros()"
-        class="filtro-input"
-      >
-        <option value="">Todos los tipos</option>
-        <option *ngFor="let tipo of tiposProductos" [value]="tipo">
-          {{ tipo }}
-        </option>
-      </select>
+      />ñ
     </div>
 
     <div class="filtros-precio">
