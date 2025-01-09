@@ -11,11 +11,10 @@ import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-agregar-usuario',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './agregar-usuario.component.html',
-  styleUrl: './agregar-usuario.component.css'
+    selector: 'app-agregar-usuario',
+    imports: [CommonModule, ReactiveFormsModule],
+    templateUrl: './agregar-usuario.component.html',
+    styleUrl: './agregar-usuario.component.css'
 })
 
 

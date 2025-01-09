@@ -8,11 +8,10 @@ import { Usuario } from '../../interface/usuario';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-agregar-usuario',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './agregar-admin.component.html',
-  styleUrl: './agregar-admin.component.css'
+    selector: 'app-agregar-usuario',
+    imports: [CommonModule, ReactiveFormsModule],
+    templateUrl: './agregar-admin.component.html',
+    styleUrl: './agregar-admin.component.css'
 })
 
 

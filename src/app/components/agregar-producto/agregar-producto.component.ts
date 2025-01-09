@@ -5,11 +5,10 @@ import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-agregar-producto',
-  standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, FormsModule],
-  templateUrl: './agregar-producto.component.html',
-  styleUrl: './agregar-producto.component.css'
+    selector: 'app-agregar-producto',
+    imports: [ReactiveFormsModule, CommonModule, FormsModule],
+    templateUrl: './agregar-producto.component.html',
+    styleUrl: './agregar-producto.component.css'
 })
 export class AgregarProductoComponent implements OnInit {
   productoForm!: FormGroup;

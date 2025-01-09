@@ -6,11 +6,10 @@ import { FormsModule } from '@angular/forms';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-admin-lista-productos',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
-  templateUrl: './admin-lista-productos.component.html',
-  styleUrl: './admin-lista-productos.component.css',
+    selector: 'app-admin-lista-productos',
+    imports: [CommonModule, FormsModule],
+    templateUrl: './admin-lista-productos.component.html',
+    styleUrl: './admin-lista-productos.component.css'
 })
 export class AdminListaProductosComponent {
   productos: Producto[] = [];

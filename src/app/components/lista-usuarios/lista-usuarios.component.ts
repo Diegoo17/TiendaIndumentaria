@@ -5,11 +5,10 @@ import { Usuario } from '../../interface/usuario';
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-lista-usuarios',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './lista-usuarios.component.html',
-  styleUrls: ['./lista-usuarios.component.css']
+    selector: 'app-lista-usuarios',
+    imports: [CommonModule],
+    templateUrl: './lista-usuarios.component.html',
+    styleUrls: ['./lista-usuarios.component.css']
 })
 export class ListaUsuariosComponent implements OnInit {
   usuarios: Usuario[] = [];

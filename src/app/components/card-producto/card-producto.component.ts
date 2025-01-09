@@ -5,11 +5,10 @@ import { AuthService } from '../../services/auth/auth.service';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-card-producto',
-  standalone: true,
-  imports: [CommonModule],
-  templateUrl: './card-producto.component.html',
-  styleUrl: './card-producto.component.css'
+    selector: 'app-card-producto',
+    imports: [CommonModule],
+    templateUrl: './card-producto.component.html',
+    styleUrl: './card-producto.component.css'
 })
 export class CardProductoComponent {
   @Input() producto: any;

@@ -8,11 +8,10 @@ import { UsuariosService } from '../../services/usuarioService/usuarios.service'
 import Swal from 'sweetalert2';
 
 @Component({
-  selector: 'app-perfil',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
-  templateUrl: './perfil.component.html',
-  styleUrls: ['./perfil.component.css']
+    selector: 'app-perfil',
+    imports: [CommonModule, ReactiveFormsModule],
+    templateUrl: './perfil.component.html',
+    styleUrls: ['./perfil.component.css']
 })
 export class PerfilComponent implements OnInit {
   perfilForm: FormGroup;
